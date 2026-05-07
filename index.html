@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitigasi Bencana SMK - Edukasi Interaktif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: linear-gradient(rgba(240, 244, 248, 0.85), rgba(240, 244, 248, 0.85)), url('https://i.imgur.com/8Qp4R7T.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .music-player {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.7); }
+            100% { box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
+        }
+
+        .timer-badge {
+            background: #ef4444;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 999px;
+            font-weight: bold;
+        }
+
+        .game-item {
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: grayscale(0.5);
+        }
+
+        .game-item.collected {
+            filter: grayscale(0);
+            transform: scale(1.1);
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+
+        .quiz-option {
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(8px);
+            border-color: #fbbf24;
+        }
+
+        .progress-bar-fill {
+            transition: width 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-2 md:p-8">
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://github.com/Haerula/Music-game/raw/refs/heads/main/The_Path_Forward.mp4" type="audio/mp4">
+    </audio>
+
+    <!-- Music Toggle -->
+    <div class="music-player glass-card p-3 shadow-xl flex items-center gap-3 border border-blue-100">
+        <button id="musicToggle" class="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all">
+            <i id="musicIcon" class="fas fa-play"></i>
+        </button>
+        <div class="hidden sm:block text-right">
+            <p class="text-[10px] font-bold text-gray-800 uppercase">BGM</p>
+            <p class="text-[8px] text-gray-400">The Path Forward</p>
+        </div>
+    </div>
+
+    <!-- 1. Login Page -->
+    <section id="loginPage" class="page active">
+        <div class="max-w-md mx-auto mt-10 md:mt-20">
+            <div class="glass-card p-10 shadow-2xl text-center border-t-8 border-blue-600">
+                <div class="mb-6">
+                    <div class="w-20 h-20 bg-blue-600 text-white rounded-3xl flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-blue-900">E-Mitigasi SMK</h1>
+                    <p class="text-gray-500">Materi Edukasi Interaktif</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <input type="text" id="inputNama" placeholder="Nama Lengkap" class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white/50">
+                    <input type="text" id="inputKelas" placeholder="Kelas (Contoh: X TKR 1)" class="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all bg-white/50">
+                    <button onclick="startApp()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg transform active:scale-95 transition-all">
+                        Mulai Belajar <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+                <div class="mt-8 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                    &copy; 2024 Haerul - SMK Edukasi
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Dashboard Page -->
+    <section id="dashboardPage" class="page">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header Dashboard -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-md">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800" id="displayNama">User</h2>
+                        <p class="text-sm text-blue-600 font-medium" id="displayKelas">Kelas</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="glass-card px-6 py-2 flex items-center gap-3 border border-orange-100 shadow-sm">
+                        <i class="fas fa-star text-orange-400"></i>
+                        <span class="font-extrabold text-gray-800" id="scoreDisplay">Skor: 0</span>
+                    </div>
+                    <div class="timer-badge flex items-center gap-2 shadow-sm">
+                        <i class="fas fa-clock"></i>
+                        <span id="timerDisplay">00:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Sidebar Menu -->
+                <div class="lg:col-span-3 space-y-2">
+                    <button onclick="showContent('home')" class="nav-link w-full text-left px-5 py-3 rounded-xl bg-white/80 shadow-sm font-bold text-blue-600 border-2 border-blue-500 flex items-center gap-3 transition-all" data-section="home">
+                        <i class="fas fa-home w-5"></i> Beranda
+                    </button>
+                    <button onclick="showContent('tujuan')" class="nav-link w-full text-left px-5 py-3 rounded-xl bg-white/80 shadow-sm font-bold text-gray-600 hover:bg-white flex items-center gap-3 transition-all" data-section="tujuan">
+                        <i class="fas fa-bullseye w-5"></i> Tujuan Pembelajaran
+                    </button>
+                    <button onclick="showContent('bencana')" class="nav-link w-full text-left px-5 py-3 rounded-xl bg-white/80 shadow-sm font-bold text-gray-600 hover:bg-white flex items-center gap-3 transition-all" data-section="bencana">
+                        <i class="fas fa-exclamation-triangle w-5"></i> Materi Mitigasi
+                    </button>
+                    <button onclick="showContent('game')" class="nav-link w-full text-left px-5 py-3 rounded-xl bg-white/80 shadow-sm font-bold text-gray-600 hover:bg-white flex items-center gap-3 transition-all" data-section="game">
+                        <i class="fas fa-gamepad w-5"></i> Game Siaga
+                    </button>
+                    <button onclick="showContent('quiz')" class="nav-link w-full text-left px-5 py-3 rounded-xl bg-orange-500 shadow-lg font-bold text-white flex items-center gap-3 transition-all" data-section="quiz">
+                        <i class="fas fa-pen-nib w-5"></i> Latihan Soal
+                    </button>
+                </div>
+
+                <!-- Main Content Display -->
+                <div class="lg:col-span-9">
+                    
+                    <!-- Section: Home -->
+                    <div id="content-home" class="content-section">
+                        <div class="glass-card p-8 mb-6 border-l-8 border-blue-600">
+                            <h3 class="text-2xl font-bold text-blue-900 mb-2">Selamat Belajar, <span id="welcomeNama">Siswa</span>! 🚀</h3>
+                            <p class="text-gray-600 mb-6 leading-relaxed">Persiapkan dirimu untuk menghadapi kuis dan simulasi bencana. Kumpulkan poin sebanyak mungkin!</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100">
+                                    <div class="text-4xl mb-3">📋</div>
+                                    <h4 class="font-bold text-blue-900">Total Soal</h4>
+                                    <p class="text-sm text-blue-700">Ada 10 tantangan kuis menunggumu.</p>
+                                </div>
+                                <div class="bg-orange-50/50 p-6 rounded-2xl border border-orange-100">
+                                    <div class="text-4xl mb-3">🎮</div>
+                                    <h4 class="font-bold text-orange-900">Mode Game</h4>
+                                    <p class="text-sm text-orange-700">Simulasi isi tas siaga interaktif.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Tujuan Pembelajaran -->
+                    <div id="content-tujuan" class="content-section hidden">
+                        <div class="glass-card p-8">
+                            <h3 class="text-xl font-extrabold text-gray-800 mb-6 flex items-center gap-3">
+                                <i class="fas fa-bullseye text-red-500"></i> Tujuan Pembelajaran
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-white/70 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+                                    <p class="text-sm font-semibold text-gray-700">1. Memahami konsep mitigasi bencana struktural dan non-struktural.</p>
+                                </div>
+                                <div class="p-4 bg-white/70 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+                                    <p class="text-sm font-semibold text-gray-700">2. Mengidentifikasi jalur evakuasi dan titik kumpul di lingkungan sekolah.</p>
+                                </div>
+                                <div class="p-4 bg-white/70 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+                                    <p class="text-sm font-semibold text-gray-700">3. Menerapkan tindakan penyelamatan diri yang cepat dan tepat.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Materi -->
+                    <div id="content-bencana" class="content-section hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="glass-card p-6 border-t-8 border-yellow-400">
+                                <h4 class="font-bold text-lg mb-2 text-gray-800">Gempa Bumi</h4>
+                                <p class="text-sm text-gray-600 mb-4">Ingat prinsip 222 (2 detik drop, 2 detik cover, 2 detik hold on).</p>
+                                <button onclick="addPoints(10, 'Ilmu Gempa Berhasil Dipelajari!')" class="bg-yellow-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md">Pelajari (+10 Poin)</button>
+                            </div>
+                            <div class="glass-card p-6 border-t-8 border-red-500">
+                                <h4 class="font-bold text-lg mb-2 text-gray-800">Kebakaran Bengkel</h4>
+                                <p class="text-sm text-gray-600 mb-4">Pastikan kabel tidak menumpuk dan tahu lokasi APAR terdekat.</p>
+                                <button onclick="addPoints(10, 'K3 Bengkel Dipahami!')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md">Pelajari (+10 Poin)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Game Siaga -->
+                    <div id="content-game" class="content-section hidden">
+                        <div class="glass-card p-8 text-center">
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Misi: Kemasi Tas Siaga! 🎒</h3>
+                            <p class="text-sm text-gray-500 mb-6">Kumpulkan 5 item WAJIB untuk bertahan hidup selama 3 hari.</p>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="gameGrid">
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Air Minum', true)">
+                                    <span class="text-3xl">💧</span>
+                                    <span class="text-[10px] font-bold">Air Minum</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Buku Pelajaran', false)">
+                                    <span class="text-3xl">📚</span>
+                                    <span class="text-[10px] font-bold">Buku</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Senter', true)">
+                                    <span class="text-3xl">🔦</span>
+                                    <span class="text-[10px] font-bold">Senter</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Obat', true)">
+                                    <span class="text-3xl">💊</span>
+                                    <span class="text-[10px] font-bold">Obat-obatan</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Stik PS', false)">
+                                    <span class="text-3xl">🎮</span>
+                                    <span class="text-[10px] font-bold">Gamepad</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Makanan', true)">
+                                    <span class="text-3xl">🍞</span>
+                                    <span class="text-[10px] font-bold">Roti</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Peluit', true)">
+                                    <span class="text-3xl">📢</span>
+                                    <span class="text-[10px] font-bold">Peluit</span>
+                                </div>
+                                <div class="game-item p-4 bg-white/80 rounded-2xl border-2 flex flex-col items-center gap-2" onclick="collectItem(this, 'Cermin', false)">
+                                    <span class="text-3xl">🪞</span>
+                                    <span class="text-[10px] font-bold">Cermin</span>
+                                </div>
+                            </div>
+                            <div class="mt-6 text-sm font-bold text-blue-600" id="gameProgress">Progress: 0/5</div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Latihan Soal -->
+                    <div id="content-quiz" class="content-section hidden">
+                        <div class="glass-card p-4 md:p-8 bg-blue-950/90 text-white min-h-[400px] flex flex-col relative overflow-hidden shadow-2xl">
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-blue-800 h-2 rounded-full mb-6 overflow-hidden">
+                                <div id="quizProgressFill" class="progress-bar-fill bg-yellow-400 h-full w-0"></div>
+                            </div>
+
+                            <div id="quizContainer">
+                                <!-- Quiz Dynamic Content -->
+                            </div>
+
+                            <!-- Loader Overlay -->
+                            <div id="quizLoader" class="absolute inset-0 bg-blue-900/80 backdrop-blur-sm flex items-center justify-center hidden z-50">
+                                <div class="text-center">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-yellow-400 border-t-transparent mx-auto mb-4"></div>
+                                    <p class="font-bold text-yellow-400 animate-pulse">Memeriksa Jawaban...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 mb-20 text-center">
+                <div class="inline-block p-4 glass-card border border-gray-100">
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">
+                        &copy; 2024 Haerul | SMK Multimedia & Teknik
+                    </p>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+    <!-- UI Feedback Toast -->
+    <div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 px-6 py-3 bg-green-600 text-white rounded-full shadow-2xl opacity-0 transition-all pointer-events-none z-[1000] font-bold">
+        +10 Poin!
+    </div>
+
+    <script>
+        // State Management
+        let score = 0;
+        let seconds = 0;
+        let timerInterval;
+        let currentQuizIndex = 0;
+        let collectedCount = 0;
+        const audio = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        const quizQuestions = [
+            { q: "Apa langkah pertama saat merasakan getaran gempa bumi?", options: ["Lari secepatnya", "Drop (Merunduk)", "Mencari HP"], correct: 1 },
+            { q: "Alat pemadam api ringan di sekolah disebut...", options: ["APAR", "Water Cannon", "Pompa Air"], correct: 0 },
+            { q: "Di mana kita harus berkumpul setelah evakuasi?", options: ["Kantin", "Ruang Kelas", "Titik Kumpul (Assembly Point)"], correct: 2 },
+            { q: "Berapa lama minimal persediaan makanan di Tas Siaga?", options: ["1 Hari", "3 Hari", "1 Minggu"], correct: 1 },
+            { q: "Kenapa dilarang menggunakan lift saat kebakaran?", options: ["Takut gelap", "Bisa terjebak jika listrik mati", "Lift terlalu lambat"], correct: 1 },
+            { q: "Warna rambu jalur evakuasi biasanya adalah...", options: ["Merah", "Kuning", "Hijau"], correct: 2 },
+            { q: "Jika terjebak asap tebal, sebaiknya kita...", options: ["Berdiri tegak", "Merangkak di bawah asap", "Berlari kencang"], correct: 1 },
+            { q: "Tas Siaga Bencana sebaiknya diletakkan di...", options: ["Gudang", "Tempat yang mudah dijangkau", "Dalam lemari terkunci"], correct: 1 },
+            { q: "Nomor darurat nasional Indonesia adalah...", options: ["911", "110", "112"], correct: 2 },
+            { q: "Mitigasi yang dilakukan dengan membangun tanggul disebut...", options: ["Mitigasi Struktural", "Mitigasi Non-Struktural", "Mitigasi Sosial"], correct: 0 }
+        ];
+
+        function startApp() {
+            const nama = document.getElementById('inputNama').value;
+            const kelas = document.getElementById('inputKelas').value;
+            if (!nama || !kelas) return alert("Lengkapi identitasmu!");
+
+            document.getElementById('displayNama').innerText = nama;
+            document.getElementById('displayKelas').innerText = kelas;
+            document.getElementById('welcomeNama').innerText = nama;
+            
+            document.getElementById('loginPage').classList.remove('active');
+            document.getElementById('dashboardPage').classList.add('active');
+
+            startTimer();
+            loadQuiz();
+            playMusic();
+        }
+
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                document.getElementById('timerDisplay').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function showContent(sectionId) {
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById('content-' + sectionId);
+            if(target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'border-2', 'border-blue-500');
+                btn.classList.add('bg-white/80', 'text-gray-600');
+                if(btn.getAttribute('data-section') === sectionId) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-white/80', 'text-gray-600');
+                }
+            });
+
+            if(sectionId === 'quiz') loadQuiz();
+        }
+
+        function collectItem(el, name, isRequired) {
+            if (el.classList.contains('collected')) return;
+
+            if (isRequired) {
+                el.classList.add('collected');
+                collectedCount++;
+                addPoints(20, `Hebat! ${name} dimasukkan.`);
+                document.getElementById('gameProgress').innerText = `Progress: ${collectedCount}/5`;
+                
+                if (collectedCount === 5) {
+                    showToast("Misi Selesai! Tas Siap!", "bg-blue-600");
+                }
+            } else {
+                showToast(`${name} tidak terlalu penting saat darurat.`, "bg-red-500");
+                el.classList.add('shake');
+                setTimeout(() => el.classList.remove('shake'), 300);
+            }
+        }
+
+        function loadQuiz() {
+            const container = document.getElementById('quizContainer');
+            const progress = document.getElementById('quizProgressFill');
+            
+            const percent = (currentQuizIndex / quizQuestions.length) * 100;
+            progress.style.width = percent + '%';
+
+            if (currentQuizIndex >= quizQuestions.length) {
+                container.innerHTML = `
+                    <div class="text-center py-10 animate__animated animate__zoomIn">
+                        <div class="relative inline-block mb-6">
+                             <i class="fas fa-medal text-8xl text-yellow-400"></i>
+                             <i class="fas fa-check-circle absolute bottom-0 right-0 text-3xl text-green-400 bg-white rounded-full"></i>
+                        </div>
+                        <h2 class="text-3xl font-extrabold mb-2">Kuis Selesai!</h2>
+                        <p class="text-blue-200 mb-8">Luar biasa! Kamu telah menguasai dasar mitigasi.</p>
+                        <div class="bg-blue-800/50 p-6 rounded-3xl mb-8 border border-white/10">
+                            <p class="text-sm uppercase tracking-widest text-blue-300 font-bold mb-1">Skor Akhir</p>
+                            <h3 class="text-5xl font-black text-yellow-400">${score}</h3>
+                        </div>
+                        <button onclick="resetQuiz()" class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-black px-10 py-4 rounded-2xl shadow-xl transition-all active:scale-95">
+                            ULANGI LATIHAN <i class="fas fa-redo ml-2"></i>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const q = quizQuestions[currentQuizIndex];
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-8">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-yellow-400 text-blue-900 w-8 h-8 rounded-lg flex items-center justify-center font-bold">
+                            ${currentQuizIndex + 1}
+                        </span>
+                        <span class="text-xs font-bold uppercase tracking-widest text-blue-300">Pertanyaan ${currentQuizIndex + 1} dari 10</span>
+                    </div>
+                    <span class="text-xs font-bold px-3 py-1 bg-white/10 rounded-lg border border-white/10">Total: ${score} Pts</span>
+                </div>
+                
+                <h3 class="text-xl md:text-2xl font-bold mb-8 leading-tight min-h-[80px]">${q.q}</h3>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    ${q.options.map((opt, idx) => `
+                        <button onclick="handleAnswer(${idx})" class="quiz-option w-full text-left p-5 rounded-2xl font-semibold flex items-center justify-between group">
+                            <span>${opt}</span>
+                            <i class="fas fa-chevron-right opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function handleAnswer(idx) {
+            const correctIdx = quizQuestions[currentQuizIndex].correct;
+            const loader = document.getElementById('quizLoader');
+            
+            loader.classList.remove('hidden');
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                
+                if (idx === correctIdx) {
+                    addPoints(30, "Jawaban Benar! +30 Poin");
+                    currentQuizIndex++;
+                    loadQuiz();
+                } else {
+                    showToast("Jawaban Salah! Coba lagi.", "bg-red-500");
+                    const container = document.getElementById('quizContainer');
+                    container.classList.add('shake');
+                    setTimeout(() => container.classList.remove('shake'), 300);
+                }
+            }, 600);
+        }
+
+        function resetQuiz() {
+            currentQuizIndex = 0;
+            score = 0;
+            document.getElementById('scoreDisplay').innerText = `Skor: 0`;
+            loadQuiz();
+        }
+
+        function addPoints(pts, msg) {
+            score += pts;
+            document.getElementById('scoreDisplay').innerText = `Skor: ${score}`;
+            showToast(msg);
+        }
+
+        function showToast(msg, color = "bg-green-600") {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.className = `fixed top-10 left-1/2 -translate-x-1/2 px-6 py-3 ${color} text-white rounded-full shadow-2xl opacity-100 transition-all z-[1000] font-bold`;
+            setTimeout(() => t.style.opacity = '0', 2000);
+        }
+
+        function playMusic() {
+            audio.play().then(() => {
+                isPlaying = true;
+                musicIcon.className = "fas fa-pause";
+                musicToggle.classList.add('pulse');
+            }).catch(() => console.log("User interaction needed for music"));
+        }
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                musicIcon.className = "fas fa-play";
+                musicToggle.classList.remove('pulse');
+            } else {
+                audio.play();
+                musicIcon.className = "fas fa-pause";
+                musicToggle.classList.add('pulse');
+            }
+            isPlaying = !isPlaying;
+        });
+
+        audio.volume = 0.4;
+    </script>
+</body>
+</html>
